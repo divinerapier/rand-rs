@@ -637,12 +637,14 @@ fn seedrand(x: i64) -> i64 {
 }
 
 impl RngSource {
-    pub fn new() -> RngSource {
-        RngSource {
+    pub fn new(seed: i64) -> RngSource {
+        let mut src = RngSource {
             tap: 0,
             feed: 0,
             vector: [0; rngLen],
-        }
+        };
+        src.seed(seed);
+        src
     }
 }
 
@@ -679,7 +681,12 @@ impl Source for RngSource {
         if self.feed < 0 {
             self.feed += rngLen as i64;
         }
-        let x = self.vector[self.feed as usize] + self.vector[self.tap as usize];
+        println!(
+            "vector[{}]: {},  vector[{}]: {}",
+            self.feed, self.vector[self.feed as usize], self.tap, self.vector[self.tap as usize]
+        );
+        // disable overflow checking
+        let x = self.vector[self.feed as usize].wrapping_add(self.vector[self.tap as usize]);
         self.vector[self.feed as usize] = x;
         x as u64
     }

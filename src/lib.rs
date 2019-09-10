@@ -100,7 +100,7 @@ where
 mod test {
     #[test]
     fn examples() {
-        let mut r: super::Rand<_> = super::Rand::new(super::rng::RngSource::new());
+        let mut r: super::Rand<_> = super::Rand::new(super::rng::RngSource::new(1));
         println!("{}", r.i64());
         println!("{}", r.i64());
         println!("{}", r.i64());
