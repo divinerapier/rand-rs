@@ -6,6 +6,14 @@ thread_local!(
         std::cell::RefCell::new(Rand::new(RngSource::new(1)));
 );
 
+pub fn seed(seed: i64) {
+    THREAD_RAND.with(|x| {
+        let x: &std::cell::RefCell<Rand<RngSource>> = x;
+        let mut x = x.borrow_mut();
+        x.seed(seed);
+    })
+}
+
 pub fn i32() -> i32 {
     THREAD_RAND.with(|x| {
         let x: &std::cell::RefCell<Rand<RngSource>> = x;
