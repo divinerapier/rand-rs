@@ -52,7 +52,7 @@ where
     pub fn i32n(&mut self, n: i32) -> i32 {
         assert!(n > 0);
         if n & (n - 1) == 0 {
-            return self.i32() % (n - 1);
+            return self.i32() & (n - 1);
         }
         let max = (1 << 31) - 1 - ((1 << 31) % n);
         let mut v = self.i32();
@@ -68,7 +68,7 @@ where
     pub fn i64n(&mut self, n: i64) -> i64 {
         assert!(n > 0);
         if n & (n - 1) == 0 {
-            return self.i64() % (n - 1);
+            return self.i64() & (n - 1);
         }
         let max = (1 << 63) - 1 - ((1 << 63) % n);
         let mut v = self.i64();
