@@ -4,13 +4,25 @@ mod rng;
 mod source;
 mod zipf;
 
+unsafe impl<S: source::Source> Send for Rand<S> where S: Send {}
+unsafe impl<S: source::Source> Sync for Rand<S> where S: Sync {}
+
 pub struct Rand<S>
 where
     S: source::Source,
 {
     src: S,
-    read_val: i64,
-    read_pos: i8,
+}
+
+impl<S: Sized + source::Source> Clone for Rand<S>
+where
+    S: Clone,
+{
+    fn clone(&self) -> Self {
+        Rand {
+            src: self.src.clone(),
+        }
+    }
 }
 
 impl<S> Rand<S>
@@ -18,11 +30,7 @@ where
     S: source::Source,
 {
     pub fn new(src: S) -> Rand<S> {
-        Rand {
-            src,
-            read_val: 0,
-            read_pos: 0,
-        }
+        Rand { src }
     }
 
     pub fn seed(&mut self, seed: i64) {
@@ -106,5 +114,20 @@ mod test {
         println!("{}", r.i64());
         println!("{}", r.i64());
         println!("{}", r.i64());
+    }
+    #[test]
+    fn examples2() {
+        let r: super::Rand<_> = super::Rand::new(super::rng::LockedSource::new(1));
+        let mut handles = vec![];
+        for _i in 0..4 {
+            let mut r = r.clone();
+            let h = std::thread::spawn(move || {
+                println!("{}", r.i64());
+            });
+            handles.push(h);
+        }
+        for h in handles {
+            h.join().unwrap();
+        }
     }
 }

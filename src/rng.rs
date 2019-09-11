@@ -1,3 +1,5 @@
+use std::sync::{Arc, Mutex};
+
 use crate::source::Source;
 
 const rngLen: usize = 607;
@@ -681,10 +683,10 @@ impl Source for RngSource {
         if self.feed < 0 {
             self.feed += rngLen as i64;
         }
-        println!(
-            "vector[{}]: {},  vector[{}]: {}",
-            self.feed, self.vector[self.feed as usize], self.tap, self.vector[self.tap as usize]
-        );
+        // println!(
+        //     "vector[{}]: {},  vector[{}]: {}",
+        //     self.feed, self.vector[self.feed as usize], self.tap, self.vector[self.tap as usize]
+        // );
         // disable overflow checking
         let x = self.vector[self.feed as usize].wrapping_add(self.vector[self.tap as usize]);
         self.vector[self.feed as usize] = x;
@@ -693,6 +695,37 @@ impl Source for RngSource {
 
     fn i64(&mut self) -> i64 {
         (self.u64() % rngMask) as i64
+    }
+}
+
+#[derive(Clone)]
+pub struct LockedSource {
+    inner: Arc<Mutex<RngSource>>,
+}
+
+unsafe impl Send for LockedSource {}
+unsafe impl Sync for LockedSource {}
+
+impl LockedSource {
+    pub fn new(seed: i64) -> LockedSource {
+        LockedSource {
+            inner: Arc::new(Mutex::new(RngSource::new(seed))),
+        }
+    }
+}
+
+impl Source for LockedSource {
+    fn seed(&mut self, seed: i64) {
+        let mut src = self.inner.lock().unwrap();
+        src.seed(seed);
+    }
+    fn i64(&mut self) -> i64 {
+        let mut src = self.inner.lock().unwrap();
+        src.i64()
+    }
+    fn u64(&mut self) -> u64 {
+        let mut src = self.inner.lock().unwrap();
+        src.u64()
     }
 }
 
