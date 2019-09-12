@@ -100,10 +100,7 @@ where
         }
     }
 
-    pub fn shuffle<T>(&mut self, array: &mut Vec<T>)
-    where
-        T: std::fmt::Debug,
-    {
+    pub fn shuffle<T>(&mut self, array: &mut Vec<T>) {
         let mut i = array.len() - 1;
         while i > 1 << 31 - 2 {
             let j = self.i64n((i + 1) as i64);

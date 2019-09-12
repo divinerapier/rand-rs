@@ -62,7 +62,7 @@ pub fn i64n(n: i64) -> i64 {
     })
 }
 
-pub fn shuffle<T: std::fmt::Debug>(array: &mut Vec<T>) {
+pub fn shuffle<T>(array: &mut Vec<T>) {
     THREAD_RAND.with(|x| {
         let x: &std::cell::RefCell<Rand<RngSource>> = x;
         let mut x = x.borrow_mut();
