@@ -687,10 +687,6 @@ impl Source for RngSource {
         if self.feed < 0 {
             self.feed += RNG_LEN as i64;
         }
-        // println!(
-        //     "vector[{}]: {},  vector[{}]: {}",
-        //     self.feed, self.vector[self.feed as usize], self.tap, self.vector[self.tap as usize]
-        // );
         // disable overflow checking
         let x = self.vector[self.feed as usize].wrapping_add(self.vector[self.tap as usize]);
         self.vector[self.feed as usize] = x;
@@ -698,7 +694,7 @@ impl Source for RngSource {
     }
 
     fn i64(&mut self) -> i64 {
-        (self.u64() % RNG_MASK) as i64
+        (self.u64() & RNG_MASK) as i64
     }
 }
 
@@ -741,5 +737,11 @@ mod test {
         let b = 1;
         let a = a ^ (b << 1);
         assert_eq!(a, 3);
+    }
+
+    #[test]
+    fn print_const() {
+        println!("RNG_MAX: {}", super::RNG_MAX);
+        println!("RNG_MASK: {}", super::RNG_MASK);
     }
 }
