@@ -1,4 +1,5 @@
 mod rand;
+mod reader;
 mod source;
 mod thread;
 
