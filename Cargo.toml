@@ -1,16 +1,18 @@
 [package]
 name = "srand"
-version = "0.3.0"
+version = "0.3.1"
 authors = ["divinerapier <poriter.coco@gmail.com>"]
 edition = "2018"
 license = "Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/divinerapier/rand-rs"
 description = """
-Random number generators and other randomness functionality.
+Random number generators and other randomness functionality with simple apis to use.
 """
 keywords = ["random", "rng"]
 categories = ["algorithms"]
+homepage = "https://github.com/divinerapier/srand"
+documentation = "https://docs.rs/srand"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

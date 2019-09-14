@@ -3,7 +3,10 @@ use std::io::Read;
 use std::sync::Mutex;
 
 lazy_static::lazy_static! {
+    /// Easy implementation: read from /dev/urandom.
+    /// This is sufficient on Linux, OS X, and FreeBSD.
     static ref RANDOM_READER: Mutex<Reader<File>> = {
+        #[cfg(any(linux,unix,macos))]
         let f : File = File::open("/dev/urandom").unwrap();
         Mutex::new(Reader::new(f))
     };

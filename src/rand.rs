@@ -25,30 +25,82 @@ impl<S> Rand<S>
 where
     S: Source,
 {
+    /// Creates a new Rand that uses random values from src to
+    /// generate other random values.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use srand::Rand;
+    /// use srand::RngSource;
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     Ok(())
+    /// }
+    /// ```
     pub fn new(src: S) -> Rand<S> {
         Rand { src }
     }
 
+    /// Seed uses the provided seed value to initialize the generator to a
+    /// deterministic state.
     pub fn seed(&mut self, seed: i64) {
         self.src.seed(seed);
     }
 
+    /// Returns a non-negative pseudo-random 63-bit integer as an i64.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// let n = r.i64();
+    /// ```
     pub fn i64(&mut self) -> i64 {
         self.src.i64()
     }
 
+    /// Returns a pseudo-random 64-bit value as a u64.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// let n = r.u64();
+    /// ```
     pub fn u64(&mut self) -> u64 {
         self.src.u64()
     }
 
+    /// i32 returns a non-negative pseudo-random 31-bit integer as an i32.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// let n = r.i32();
+    /// ```
     pub fn i32(&mut self) -> i32 {
         (self.i64() >> 32) as i32
     }
 
+    /// Returns a pseudo-random 32-bit value as a u32.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// let n = r.u32();
+    /// ```
     pub fn u32(&mut self) -> u32 {
         (self.i64() >> 31) as u32
     }
 
+    /// Returns an i32, a non-negative pseudo-random number in [0,n).
+    /// It panics if n <= 0.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// let n = r.i32n(23i32);
+    /// ```
     pub fn i32n(&mut self, n: i32) -> i32 {
         assert!(n > 0);
         if n & (n - 1) == 0 {
@@ -65,6 +117,13 @@ where
         v % n
     }
 
+    /// Returns an i64, a non-negative pseudo-random number in [0,n).
+    /// It panics if n <= 0.
+    /// # Examples
+    ///
+    /// ```no_run
+    /// let n = r.i64n(47i64);
+    /// ```
     pub fn i64n(&mut self, n: i64) -> i64 {
         assert!(n > 0);
         if n & (n - 1) == 0 {
@@ -82,6 +141,13 @@ where
         v % n
     }
 
+    /// Returns a f32, a pseudo-random number in [0.0,1.0).
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// let n = r.f32();
+    /// ```
     pub fn f32(&mut self) -> f32 {
         loop {
             let f = self.f64() as f32;
@@ -91,6 +157,13 @@ where
         }
     }
 
+    /// Returns a f64, a pseudo-random number in [0.0,1.0).
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// let n = r.f64();
+    /// ```
     pub fn f64(&mut self) -> f64 {
         loop {
             let f: f64 = self.i64() as f64 / (1 << 63) as f64;
@@ -100,6 +173,14 @@ where
         }
     }
 
+    /// Shuffle pseudo-randomizes the order of elements.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// let mut v = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    /// r.shuffle(&mut v);
+    /// ```
     pub fn shuffle<T>(&mut self, array: &mut Vec<T>) {
         let mut i = array.len() - 1;
         while i > 1 << 31 - 2 {

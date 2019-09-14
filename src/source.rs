@@ -1,8 +1,13 @@
 use std::sync::{Arc, Mutex};
 
+/// A Source represents a source of uniformly-distributed
+/// pseudo-random i64 values in the range [0, 1<<63) and
+/// u64 values in the range [0, 1<<64).
 pub trait Source {
     fn i64(&mut self) -> i64;
     fn u64(&mut self) -> u64;
+    /// Seed uses the provided seed value to initialize the generator
+    /// to a deterministic state.
     fn seed(&mut self, seed: i64);
 }
 
@@ -643,6 +648,17 @@ fn seedrand(x: i64) -> i64 {
 }
 
 impl RngSource {
+    /// Creates a new RugSource.
+    ///
+    /// # Examples
+    ///
+    /// ```no_run
+    /// use srand::RngSource;
+    ///
+    /// fn main() {
+    ///     let src = RngSource::new(1);
+    /// }
+    /// ```
     pub fn new(seed: i64) -> RngSource {
         let mut src = RngSource {
             tap: 0,
