@@ -4,8 +4,8 @@ use std::sync::{Arc, Mutex};
 /// pseudo-random i64 values in the range [0, 1<<63) and
 /// u64 values in the range [0, 1<<64).
 pub trait Source {
-    fn i64(&mut self) -> i64;
-    fn u64(&mut self) -> u64;
+    fn int64(&mut self) -> i64;
+    fn uint64(&mut self) -> u64;
     /// Seed uses the provided seed value to initialize the generator
     /// to a deterministic state.
     fn seed(&mut self, seed: i64);
@@ -694,7 +694,7 @@ impl Source for RngSource {
         }
     }
 
-    fn u64(&mut self) -> u64 {
+    fn uint64(&mut self) -> u64 {
         self.tap -= 1;
         if self.tap < 0 {
             self.tap += RNG_LEN as i64;
@@ -709,8 +709,8 @@ impl Source for RngSource {
         x as u64
     }
 
-    fn i64(&mut self) -> i64 {
-        (self.u64() & RNG_MASK) as i64
+    fn int64(&mut self) -> i64 {
+        (self.uint64() & RNG_MASK) as i64
     }
 }
 
@@ -735,13 +735,13 @@ impl Source for LockedSource {
         let mut src = self.inner.lock().unwrap();
         src.seed(seed);
     }
-    fn i64(&mut self) -> i64 {
+    fn int64(&mut self) -> i64 {
         let mut src = self.inner.lock().unwrap();
-        src.i64()
+        src.int64()
     }
-    fn u64(&mut self) -> u64 {
+    fn uint64(&mut self) -> u64 {
         let mut src = self.inner.lock().unwrap();
-        src.u64()
+        src.uint64()
     }
 }
 

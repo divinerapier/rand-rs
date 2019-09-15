@@ -8,7 +8,7 @@ Random number generators and other randomness functionality inspired by golang s
 let mut r: Rand<_> = Rand::new(RngSource::new(1));
 let mut get = vec![];
 for _i in 0..50 {
-    get.push(r.i32n(100));
+    get.push(r.int32n(100));
 }
 ```
 
@@ -34,11 +34,11 @@ for h in handles {
 ## Thread local apis
 
 ``` rust
-srand::seed(1234567);
-srand::i32();
-srand::u32();
-srand::i64();
-srand::u64();
+srand::ThreadLocal::seed(1234567);
+srand::ThreadLocal::int32();
+srand::ThreadLocal::uint32();
+srand::ThreadLocal::int64();
+srand::ThreadLocal::uint64();
 ```
 
 ## Random data

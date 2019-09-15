@@ -54,10 +54,16 @@ where
     /// # Examples
     ///
     /// ```no_run
-    /// let n = r.i64();
+    /// use srand::{Rand,RngSource};
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     println!("n: {}", r.int64());
+    ///     Ok(())
+    /// }
     /// ```
-    pub fn i64(&mut self) -> i64 {
-        self.src.i64()
+    pub fn int64(&mut self) -> i64 {
+        self.src.int64()
     }
 
     /// Returns a pseudo-random 64-bit value as a u64.
@@ -65,10 +71,16 @@ where
     /// # Examples
     ///
     /// ```no_run
-    /// let n = r.u64();
+    /// use srand::{Rand, RngSource};
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     println!("n: {}", r.uint64());
+    ///     Ok(())
+    /// }
     /// ```
-    pub fn u64(&mut self) -> u64 {
-        self.src.u64()
+    pub fn uint64(&mut self) -> u64 {
+        self.src.uint64()
     }
 
     /// i32 returns a non-negative pseudo-random 31-bit integer as an i32.
@@ -76,10 +88,16 @@ where
     /// # Examples
     ///
     /// ```no_run
-    /// let n = r.i32();
+    /// use srand::{Rand, RngSource};
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     println!("n: {}", r.int32());
+    ///     Ok(())
+    /// }
     /// ```
-    pub fn i32(&mut self) -> i32 {
-        (self.i64() >> 32) as i32
+    pub fn int32(&mut self) -> i32 {
+        (self.int64() >> 32) as i32
     }
 
     /// Returns a pseudo-random 32-bit value as a u32.
@@ -87,10 +105,16 @@ where
     /// # Examples
     ///
     /// ```no_run
-    /// let n = r.u32();
+    /// use srand::{Rand, RngSource};
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     println!("n: {}", r.uint32());
+    ///     Ok(())
+    /// }
     /// ```
-    pub fn u32(&mut self) -> u32 {
-        (self.i64() >> 31) as u32
+    pub fn uint32(&mut self) -> u32 {
+        (self.int64() >> 31) as u32
     }
 
     /// Returns an i32, a non-negative pseudo-random number in [0,n).
@@ -99,20 +123,26 @@ where
     /// # Examples
     ///
     /// ```no_run
-    /// let n = r.i32n(23i32);
+    /// use srand::{Rand, RngSource};
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     println!("n: {}", r.int32n(90000001));
+    ///     Ok(())
+    /// }
     /// ```
-    pub fn i32n(&mut self, n: i32) -> i32 {
+    pub fn int32n(&mut self, n: i32) -> i32 {
         assert!(n > 0);
         if n & (n - 1) == 0 {
-            return self.i32() & (n - 1);
+            return self.int32() & (n - 1);
         }
         let max: i64 = (1 << 31) - 1 - ((1 << 31) % n as i64);
-        let mut v = self.i32();
+        let mut v = self.int32();
         loop {
             if v as i64 <= max {
                 break;
             }
-            v = self.i32();
+            v = self.int32();
         }
         v % n
     }
@@ -122,21 +152,27 @@ where
     /// # Examples
     ///
     /// ```no_run
-    /// let n = r.i64n(47i64);
+    /// use srand::{Rand, RngSource};
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     println!("n: {}", r.int64n(90000001));
+    ///     Ok(())
+    /// }
     /// ```
-    pub fn i64n(&mut self, n: i64) -> i64 {
+    pub fn int64n(&mut self, n: i64) -> i64 {
         assert!(n > 0);
         if n & (n - 1) == 0 {
-            return self.i64() & (n - 1);
+            return self.int64() & (n - 1);
         }
         let max: u64 = 1 << 63;
         let max: i64 = ((max - 1) - (max % n as u64)) as i64;
-        let mut v = self.i64();
+        let mut v = self.int64();
         loop {
             if v <= max {
                 break;
             }
-            v = self.i64();
+            v = self.int64();
         }
         v % n
     }
@@ -146,11 +182,17 @@ where
     /// # Examples
     ///
     /// ```no_run
-    /// let n = r.f32();
+    /// use srand::{Rand, RngSource};
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     println!("n: {}", r.float32());
+    ///     Ok(())
+    /// }
     /// ```
-    pub fn f32(&mut self) -> f32 {
+    pub fn float32(&mut self) -> f32 {
         loop {
-            let f = self.f64() as f32;
+            let f = self.float64() as f32;
             if f != 1f32 {
                 return f;
             }
@@ -162,11 +204,17 @@ where
     /// # Examples
     ///
     /// ```no_run
-    /// let n = r.f64();
+    /// use srand::{Rand, RngSource};
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     println!("n: {}", r.float64());
+    ///     Ok(())
+    /// }
     /// ```
-    pub fn f64(&mut self) -> f64 {
+    pub fn float64(&mut self) -> f64 {
         loop {
-            let f: f64 = self.i64() as f64 / (1 << 63) as f64;
+            let f: f64 = self.int64() as f64 / (1 << 63) as f64;
             if f != 1f64 {
                 return f;
             }
@@ -178,18 +226,25 @@ where
     /// # Examples
     ///
     /// ```no_run
-    /// let mut v = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    /// r.shuffle(&mut v);
+    /// use srand::{Rand, RngSource};
+    ///
+    /// fn main() -> std::io::Result<()> {
+    ///     let mut r: Rand<_> = Rand::new(RngSource::new(1));
+    ///     let mut v = vec![0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    ///     println!("result: {:?}", r.shuffle(&mut v));
+    ///     println!("shuffled array: {:?}", v);
+    ///     Ok(())
+    /// }
     /// ```
     pub fn shuffle<T>(&mut self, array: &mut Vec<T>) {
         let mut i = array.len() - 1;
         while i > 1 << 31 - 2 {
-            let j = self.i64n((i + 1) as i64);
+            let j = self.int64n((i + 1) as i64);
             array.swap(i as usize, j as usize);
             i -= 1;
         }
         while i > 0 {
-            let j = self.i32n((i + 1) as i32);
+            let j = self.int32n((i + 1) as i32);
             array.swap(i as usize, j as usize);
             i -= 1;
         }
@@ -205,10 +260,10 @@ mod test {
         let r: super::Rand<_> = super::Rand::new(LockedSource::new(1));
         let mut handles = vec![];
         for i in 0..4 {
-            let mut r = r.clone();
+            let mut r: super::Rand<_> = r.clone();
             let h = std::thread::spawn(move || {
                 for j in 0..3 {
-                    println!("thread: {}, index: {}, {}", i, j, r.i64());
+                    println!("thread: {}, index: {}, {}", i, j, r.int64());
                 }
             });
             handles.push(h);
@@ -226,14 +281,14 @@ mod test {
         let mut r: super::Rand<_> = super::Rand::new(RngSource::new(1));
         let mut get = vec![];
         for _i in 0..50 {
-            get.push(r.i32n(100));
+            get.push(r.int32n(100));
         }
         assert_eq!(expected, get);
 
         let mut r: super::Rand<_> = super::Rand::new(RngSource::new(1));
         for _i in 0..50 {
             // get.push(r.i32n(20));
-            println!("r.i32n(20): {}", r.i32n(20))
+            println!("r.i32n(20): {}", r.int32n(20))
         }
 
         println!("custom rng source: i64n(100)");
@@ -245,7 +300,7 @@ mod test {
         let mut r: super::Rand<_> = super::Rand::new(RngSource::new(1));
         let mut get = vec![];
         for _i in 0..50 {
-            get.push(r.i64n(100));
+            get.push(r.int64n(100));
         }
         assert_eq!(expected, get);
 
@@ -263,7 +318,7 @@ mod test {
         let mut r: super::Rand<_> = super::Rand::new(RngSource::new(1));
         let mut get = vec![];
         for _i in 0..50 {
-            get.push(r.i32());
+            get.push(r.int32());
         }
         assert_eq!(expected, get);
 
@@ -323,8 +378,16 @@ mod test {
         let mut r: super::Rand<_> = super::Rand::new(RngSource::new(1));
         let mut get = vec![];
         for _i in 0..50 {
-            get.push(r.i64());
+            get.push(r.int64());
         }
         assert_eq!(expected, get);
+
+        let mut r: super::Rand<_> = super::Rand::new(RngSource::new(1));
+        // r.seed(1);
+        let mut v = vec![
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        ];
+        r.shuffle(&mut v);
+        println!("shuffle: {:?}", v);
     }
 }
